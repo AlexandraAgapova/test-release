@@ -1,0 +1,28 @@
+name: Count lines in TXT files
+
+on:
+  push:
+
+jobs:
+  count-txt-lines:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find and count lines in TXT files
+        run: |
+          FILES=$(find . -name '*.txt' -type f)
+          if [ -z "$FILES" ]; then
+            echo "No .txt files found!"
+            exit 1
+          fi
+
+          TOTAL_LINES=0
+          for file in $FILES; do
+            LINES=$(wc -l < "$file")
+            echo "$file has $LINES lines"
+            TOTAL_LINES=$((TOTAL_LINES + LINES))
+          done
+          echo "Total lines in all .txt files: $TOTAL_LINES"
